@@ -1,6 +1,5 @@
 # import library
-import email
-from flask import Flask, request, make_response, jsonify
+from flask import Flask, request, make_response, jsonify, redirect, url_for
 from flask_restful import Resource, Api 
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
@@ -49,6 +48,10 @@ def token(f):
     return decorator
 
 # routing register authentication
+# class Redirect(Resource):
+#     def index():
+#         return redirect(url_for('get'))
+
 class Register(Resource):
     def post(self):
         dataEmail = request.form.get('email')
@@ -110,10 +113,11 @@ class Profile(Resource):
         return make_response(jsonify(output), 200)
 
 #add api
-api.add_resource(Register, "/api/v1/register", methods=["POST"])
+api.add_resource(Register, "/", methods=["POST"])
 api.add_resource(Login, "/api/v1/login", methods=["POST"])
+# api.add_resource(Redirect, "/", methods=["POST"])
 api.add_resource(Profile, "/api/v1/profile/<id>", methods=["GET"])
 
 #run app
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=8000)
