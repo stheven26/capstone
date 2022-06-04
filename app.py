@@ -100,6 +100,18 @@ class Login(Resource):
         else:
             return jsonify({"msg":"Login failed, please try again!"})
 
+class getAllProfile(Resource):
+    # @token
+    def get(self):
+        dataQuery = AuthModel.query.all()
+        output = [
+            {
+                "id":data.id,
+                "email": data.email
+            } for data in dataQuery
+        ] 
+        return make_response(jsonify(output), 200)
+
 class Profile(Resource):
     # @token
     def get(self, id):
@@ -113,10 +125,11 @@ class Profile(Resource):
         return make_response(jsonify(output), 200)
 
 #add api
-api.add_resource(Register, "/", methods=["POST"])
+api.add_resource(Register, "/api/v1/register", methods=["POST"])
 api.add_resource(Login, "/api/v1/login", methods=["POST"])
 # api.add_resource(Redirect, "/", methods=["POST"])
 api.add_resource(Profile, "/api/v1/profile/<id>", methods=["GET"])
+api.add_resource(getAllProfile, "/", methods=["GET"])
 
 #run app
 if __name__ == "__main__":
