@@ -37,7 +37,7 @@ db.create_all()
 def token(f):
     @wraps(f)
     def decorator(*args, **kwargs):
-        token = request.args.get('datatoken') # http://127.0.0.1:5000/api/blog?datatoken=fkjsldkjflskdjflskd
+        token = request.args.get('token') # http://127.0.0.1:5000/api/v1/profile/id?token=jwttoken
         if not token:
             return make_response(jsonify({"msg":"no have token!"}), 401)
         try:
@@ -46,11 +46,6 @@ def token(f):
             return make_response(jsonify({"msg":"invalid token!"}), 401)
         return f(*args, **kwargs)
     return decorator
-
-# routing register authentication
-# class Redirect(Resource):
-#     def index():
-#         return redirect(url_for('get'))
 
 class Register(Resource):
     def post(self):
@@ -100,20 +95,8 @@ class Login(Resource):
         else:
             return jsonify({"msg":"Login failed, please try again!"})
 
-class getAllProfile(Resource):
-    # @token
-    def get(self):
-        dataQuery = AuthModel.query.all()
-        output = [
-            {
-                "id":data.id,
-                "email": data.email
-            } for data in dataQuery
-        ] 
-        return make_response(jsonify(output), 200)
-
 class Profile(Resource):
-    # @token
+    @token
     def get(self, id):
         dataQuery = AuthModel.query.get(id)
         output = [
@@ -127,9 +110,7 @@ class Profile(Resource):
 #add api
 api.add_resource(Register, "/api/v1/register", methods=["POST"])
 api.add_resource(Login, "/api/v1/login", methods=["POST"])
-# api.add_resource(Redirect, "/", methods=["POST"])
 api.add_resource(Profile, "/api/v1/profile/<id>", methods=["GET"])
-api.add_resource(getAllProfile, "/", methods=["GET"])
 
 #run app
 if __name__ == "__main__":
