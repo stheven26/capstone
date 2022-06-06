@@ -1,3 +1,3 @@
-env/
-db.sqlite
-__pycache__/
+# env/
+# db.sqlite
+# __pycache__/
